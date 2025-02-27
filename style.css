@@ -1,0 +1,15 @@
+body {
+    text-align: center;
+    background-color: #f7f7f7;
+    font-family: Arial, sans-serif;
+    overflow: hidden; /* Prevent scrolling issues */
+    margin: 0;
+}
+canvas {
+    display: block;
+    margin: auto;
+    background-color: white;
+    border: 2px solid #000;
+    width: 100%; /* Make canvas responsive */
+    max-width: 800px;
+}
