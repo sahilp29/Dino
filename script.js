@@ -1,8 +1,15 @@
 const canvas = document.getElementById("gameCanvas");
 const ctx = canvas.getContext("2d");
 
-canvas.width = window.innerWidth * 0.9; // Responsive canvas width
+canvas.width = window.innerWidth * 0.9;
 canvas.height = 200;
+
+// Load Images
+const dinoImg = new Image();
+dinoImg.src = "dino.png"; // Make sure to add a 'dino.png' file to your repository
+
+const cactusImg = new Image();
+cactusImg.src = "cactus.png"; // Add a 'cactus.png' file for the obstacle
 
 let dino = {
     x: 50,
@@ -22,25 +29,26 @@ let score = 0;
 let gameOver = false;
 
 function drawDino() {
-    ctx.fillStyle = "black";
-    ctx.fillRect(dino.x, dino.y, dino.width, dino.height);
+    ctx.drawImage(dinoImg, dino.x, dino.y, dino.width, dino.height);
 }
 
 function drawObstacles() {
-    ctx.fillStyle = "red";
     obstacles.forEach(obstacle => {
-        ctx.fillRect(obstacle.x, obstacle.y, obstacle.width, obstacle.height);
+        ctx.drawImage(cactusImg, obstacle.x, obstacle.y, obstacle.width, obstacle.height);
     });
 }
 
 function updateObstacles() {
     if (frame % 100 === 0) {
-        obstacles.push({
-            x: canvas.width,
-            y: 160,
-            width: 20,
-            height: 40
-        });
+        let numCactuses = Math.random() > 0.5 ? 1 : 2; // Random 1 or 2 cactuses
+        for (let i = 0; i < numCactuses; i++) {
+            obstacles.push({
+                x: canvas.width + i * 30, // Slight offset for multiple obstacles
+                y: 160,
+                width: 20,
+                height: 40
+            });
+        }
     }
 
     obstacles.forEach(obstacle => obstacle.x -= speed);
@@ -95,7 +103,7 @@ function update() {
     requestAnimationFrame(update);
 }
 
-// ✅ Universal Jump Function (Works for Keyboard & Touch)
+// ✅ Jump Function
 function jump() {
     if (dino.grounded) {
         dino.dy = dino.jumpPower;
@@ -103,32 +111,41 @@ function jump() {
     }
 }
 
-// ✅ Keyboard Support
+// ✅ Touch & Keyboard Controls
 document.addEventListener("keydown", (e) => {
     if (e.code === "Space") {
         jump();
     }
 });
 
-// ✅ Full Mobile Touch Support
 document.addEventListener("click", () => {
-    jump();
-});
-
-// ✅ Restart on Tap After Game Over
-canvas.addEventListener("click", () => {
     if (gameOver) {
-        obstacles = [];
-        dino.y = 150;
-        dino.dy = 0;
-        score = 0;
-        frame = 0;
-        gameOver = false;
-        update();
+        restartGame();
+    } else {
+        jump();
     }
 });
 
-// ✅ Prevent Scrolling When Tapping
+document.addEventListener("touchstart", () => {
+    if (gameOver) {
+        restartGame();
+    } else {
+        jump();
+    }
+});
+
+// ✅ Restart Function
+function restartGame() {
+    obstacles = [];
+    dino.y = 150;
+    dino.dy = 0;
+    score = 0;
+    frame = 0;
+    gameOver = false;
+    update();
+}
+
+// ✅ Prevent Scrolling
 document.body.style.overflow = "hidden";
 
 update();
