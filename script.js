@@ -95,7 +95,7 @@ function update() {
     requestAnimationFrame(update);
 }
 
-// ✅ Jump function for both keyboard and touch
+// ✅ Universal Jump Function (Works for Keyboard & Touch)
 function jump() {
     if (dino.grounded) {
         dino.dy = dino.jumpPower;
@@ -103,22 +103,21 @@ function jump() {
     }
 }
 
-// ✅ Keyboard support
+// ✅ Keyboard Support
 document.addEventListener("keydown", (e) => {
     if (e.code === "Space") {
         jump();
     }
 });
 
-// ✅ Touch support for mobile users
-canvas.addEventListener("touchstart", () => {
+// ✅ Full Mobile Touch Support
+document.addEventListener("click", () => {
     jump();
 });
 
-// ✅ Restart game on tap
+// ✅ Restart on Tap After Game Over
 canvas.addEventListener("click", () => {
     if (gameOver) {
-        // Reset game state
         obstacles = [];
         dino.y = 150;
         dino.dy = 0;
@@ -128,5 +127,8 @@ canvas.addEventListener("click", () => {
         update();
     }
 });
+
+// ✅ Prevent Scrolling When Tapping
+document.body.style.overflow = "hidden";
 
 update();
