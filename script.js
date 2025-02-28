@@ -6,10 +6,10 @@ canvas.height = 200;
 
 // Load Images
 const dinoImg = new Image();
-dinoImg.src = "dino.png"; // Make sure to add a 'dino.png' file to your repository
+dinoImg.src = "dino.png"; 
 
 const cactusImg = new Image();
-cactusImg.src = "cactus.png"; // Add a 'cactus.png' file for the obstacle
+cactusImg.src = "cactus.png"; 
 
 let dino = {
     x: 50,
@@ -24,8 +24,9 @@ let dino = {
 
 let obstacles = [];
 let frame = 0;
-let speed = 5;
+let speed = 3; // Start slower
 let score = 0;
+let highScore = localStorage.getItem("highScore") || 0;
 let gameOver = false;
 
 function drawDino() {
@@ -75,6 +76,7 @@ function update() {
         ctx.fillStyle = "black";
         ctx.font = "30px Arial";
         ctx.fillText("Game Over! Tap to Restart", canvas.width / 4, canvas.height / 2);
+        ctx.fillText(`High Score: ${highScore}`, canvas.width / 3, canvas.height / 1.5);
         return;
     }
 
@@ -96,9 +98,15 @@ function update() {
     ctx.fillStyle = "black";
     ctx.font = "20px Arial";
     ctx.fillText(`Score: ${score}`, 10, 30);
+    ctx.fillText(`High Score: ${highScore}`, 10, 50);
 
     frame++;
     score++;
+
+    // ✅ Increase speed over time
+    if (frame % 500 === 0) {
+        speed += 0.5; // Slowly increases the speed every 500 frames
+    }
 
     requestAnimationFrame(update);
 }
@@ -136,11 +144,18 @@ document.addEventListener("touchstart", () => {
 
 // ✅ Restart Function
 function restartGame() {
+    // ✅ Save High Score
+    if (score > highScore) {
+        highScore = score;
+        localStorage.setItem("highScore", highScore);
+    }
+
     obstacles = [];
     dino.y = 150;
     dino.dy = 0;
     score = 0;
     frame = 0;
+    speed = 3; // Reset speed
     gameOver = false;
     update();
 }
